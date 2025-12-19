@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Макет: Вход / Регистрация</title>
+    <link rel="stylesheet" href="css/mockup-style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-brand">
+                    <h1>Образовательная Система</h1>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="courses.html">Курсы</a></li>
+                    <li><a href="feedback.html">Обратная связь</a></li>
+                    <li><a href="login.html" class="active">Вход</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="auth-section">
+            <div class="container">
+                <div class="auth-container">
+                    <div class="auth-tabs">
+                        <button class="tab-btn active">Вход</button>
+                        <button class="tab-btn">Регистрация</button>
+                    </div>
+
+                    <!-- Форма входа -->
+                    <div class="auth-form active">
+                        <h2>Вход в систему</h2>
+                        <form>
+                            <div class="form-group">
+                                <label for="login-username">Имя пользователя или Email</label>
+                                <input type="text" id="login-username" placeholder="Введите имя пользователя или email">
+                            </div>
+                            <div class="form-group">
+                                <label for="login-password">Пароль</label>
+                                <input type="password" id="login-password" placeholder="Введите пароль">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Войти</button>
+                        </form>
+                    </div>
+
+                    <!-- Форма регистрации -->
+                    <div class="auth-form" style="display: none;">
+                        <h2>Регистрация</h2>
+                        <form>
+                            <div class="form-group">
+                                <label for="reg-username">Имя пользователя</label>
+                                <input type="text" id="reg-username" placeholder="Введите имя пользователя">
+                            </div>
+                            <div class="form-group">
+                                <label for="reg-email">Email</label>
+                                <input type="email" id="reg-email" placeholder="Введите email">
+                            </div>
+                            <div class="form-group">
+                                <label for="reg-fullname">Полное имя</label>
+                                <input type="text" id="reg-fullname" placeholder="Введите полное имя">
+                            </div>
+                            <div class="form-group">
+                                <label for="reg-password">Пароль</label>
+                                <input type="password" id="reg-password" placeholder="Введите пароль">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>О системе</h3>
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="courses.html">Курсы</a></li>
+                        <li><a href="feedback.html">Обратная связь</a></li>
+                        <li><a href="login.html">Вход в систему</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Для студентов</h3>
+                    <ul>
+                        <li><a href="courses.html">Каталог курсов</a></li>
+                        <li><a href="dashboard.html">Личный кабинет</a></li>
+                        <li><a href="feedback.html">Задать вопрос</a></li>
+                        <li><a href="login.html">Регистрация</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Контакты</h3>
+                    <ul>
+                        <li>Email: info@edu-system.ru</li>
+                        <li>Телефон: +7 (495) 123-45-67</li>
+                        <li>Адрес: г. Москва, ул. Образовательная, д. 1</li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Социальные сети</h3>
+                    <ul>
+                        <li><a href="#">ВКонтакте</a></li>
+                        <li><a href="#">Telegram</a></li>
+                        <li><a href="#">YouTube</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Система управления образовательными учреждениями. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+

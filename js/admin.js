@@ -243,7 +243,7 @@ async function loadCourses() {
                 <p><strong>Категория:</strong> ${course.category}</p>
                 <p><strong>Преподаватель:</strong> ${course.instructor}</p>
                 <p><strong>Длительность:</strong> ${course.duration}</p>
-                <p><strong>Цена:</strong> ${course.price.toLocaleString()} ₽</p>
+                <p><strong>Цена:</strong> ${course.price.toLocaleString()} BYN</p>
                 <div class="action-buttons" style="margin-top: 1rem;">
                     <button class="btn btn-small" onclick="editCourse(${course.id})">Редактировать</button>
                     <button class="btn btn-small btn-danger" onclick="deleteCourse(${course.id})">Удалить</button>

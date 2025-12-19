@@ -35,7 +35,7 @@ async function loadCourses() {
                         <span>Преподаватель: ${course.instructor}</span>
                         <span>${course.duration}</span>
                     </div>
-                    <div class="course-price">${course.price.toLocaleString()} ₽</div>
+                    <div class="course-price">${course.price.toLocaleString()} BYN</div>
                     ${currentUser ? `
                         <button class="btn btn-success btn-block enroll-btn" data-course-id="${course.id}">
                             Записаться на курс

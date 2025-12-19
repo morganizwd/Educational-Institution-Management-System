@@ -158,5 +158,21 @@
     "status": "active",
     "enrolledAt": "2024-04-25T00:00:00.000Z",
     "progress": 12
+  },
+  {
+    "id": 21,
+    "userId": 5,
+    "courseId": 3,
+    "status": "active",
+    "enrolledAt": "2025-12-19T16:11:12.868Z",
+    "progress": 0
+  },
+  {
+    "id": 22,
+    "userId": 5,
+    "courseId": 6,
+    "status": "active",
+    "enrolledAt": "2025-12-19T16:11:14.572Z",
+    "progress": 0
   }
 ]

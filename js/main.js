@@ -23,7 +23,7 @@ async function loadPopularCourses() {
                             <span>Преподаватель: ${course.instructor}</span>
                             <span>${course.duration}</span>
                         </div>
-                        <div class="course-price">${course.price.toLocaleString()} ₽</div>
+                        <div class="course-price">${course.price.toLocaleString()} BYN</div>
                         <a href="/courses.html" class="btn btn-primary">Подробнее</a>
                     </div>
                 </div>
