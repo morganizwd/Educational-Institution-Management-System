@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель администратора - Образовательная Система</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-brand">
+                    <h1>Образовательная Система</h1>
+                </div>
+                <button class="menu-toggle" id="menuToggle">☰</button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="/">Главная</a></li>
+                    <li><a href="/courses.html">Курсы</a></li>
+                    <li><a href="/feedback.html">Обратная связь</a></li>
+                    <li id="auth-menu">
+                        <a href="/login.html" id="login-link" style="display: none;">Вход</a>
+                        <span id="user-info" style="display: none;"></span>
+                        <a href="/admin.html" id="admin-link" class="active" style="display: none;">Админ</a>
+                        <a href="/dashboard.html" id="dashboard-link" style="display: none;">Кабинет</a>
+                        <a href="#" id="logout-link" style="display: none;">Выход</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="admin-section">
+            <div class="container">
+                <h2>Управление системой</h2>
+                
+                <!-- Вкладки администратора -->
+                <div class="admin-tabs">
+                    <button class="tab-btn active" data-tab="users">Пользователи</button>
+                    <button class="tab-btn" data-tab="schedule">Расписание</button>
+                    <button class="tab-btn" data-tab="processes">Учебные процессы</button>
+                    <button class="tab-btn" data-tab="courses">Курсы</button>
+                    <button class="tab-btn" data-tab="feedback">Обратная связь</button>
+                </div>
+
+                <!-- Вкладка: Управление пользователями -->
+                <div id="users-tab" class="tab-content active">
+                    <div class="admin-header">
+                        <h3>Управление пользователями</h3>
+                        <button class="btn btn-primary" id="add-user-btn">Добавить пользователя</button>
+                    </div>
+                    
+                    <div class="filter-tabs">
+                        <button class="filter-btn active" data-filter="all">Все</button>
+                        <button class="filter-btn" data-filter="student">Студенты</button>
+                        <button class="filter-btn" data-filter="teacher">Преподаватели</button>
+                        <button class="filter-btn" data-filter="admin">Администраторы</button>
+                    </div>
+
+                    <div id="users-list" class="admin-table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Имя пользователя</th>
+                                    <th>Email</th>
+                                    <th>Полное имя</th>
+                                    <th>Роль</th>
+                                    <th>Дата регистрации</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-table-body">
+                                <!-- Пользователи будут загружены через JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="users-loading" class="loading">Загрузка пользователей...</div>
+                </div>
+
+                <!-- Вкладка: Расписание -->
+                <div id="schedule-tab" class="tab-content">
+                    <div class="admin-header">
+                        <h3>Управление расписанием</h3>
+                        <button class="btn btn-primary" id="add-schedule-btn">Добавить занятие</button>
+                    </div>
+
+                    <div id="schedule-list" class="schedule-grid">
+                        <!-- Расписание будет загружено через JavaScript -->
+                    </div>
+                    <div id="schedule-loading" class="loading">Загрузка расписания...</div>
+                </div>
+
+                <!-- Вкладка: Учебные процессы -->
+                <div id="processes-tab" class="tab-content">
+                    <div class="admin-header">
+                        <h3>Управление учебными процессами</h3>
+                        <button class="btn btn-primary" id="add-process-btn">Добавить модуль</button>
+                    </div>
+
+                    <div id="processes-list" class="processes-list">
+                        <!-- Учебные процессы будут загружены через JavaScript -->
+                    </div>
+                    <div id="processes-loading" class="loading">Загрузка учебных процессов...</div>
+                </div>
+
+                <!-- Вкладка: Курсы -->
+                <div id="courses-tab" class="tab-content">
+                    <div class="admin-header">
+                        <h3>Управление курсами</h3>
+                        <button class="btn btn-primary" id="add-course-btn">Добавить курс</button>
+                    </div>
+
+                    <div id="courses-admin-list" class="courses-admin-grid">
+                        <!-- Курсы будут загружены через JavaScript -->
+                    </div>
+                    <div id="courses-admin-loading" class="loading">Загрузка курсов...</div>
+                </div>
+
+                <!-- Вкладка: Обратная связь -->
+                <div id="feedback-tab" class="tab-content">
+                    <div class="admin-header">
+                        <h3>Обратная связь</h3>
+                    </div>
+                    
+                    <div class="filter-tabs">
+                        <button class="filter-btn active" data-filter="all">Все</button>
+                        <button class="filter-btn" data-filter="new">Новые</button>
+                        <button class="filter-btn" data-filter="read">Прочитанные</button>
+                        <button class="filter-btn" data-filter="resolved">Решенные</button>
+                    </div>
+
+                    <div id="feedback-list" class="feedback-admin-list">
+                        <!-- Обратная связь будет загружена через JavaScript -->
+                    </div>
+                    <div id="feedback-loading" class="loading">Загрузка обратной связи...</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Модальное окно для добавления/редактирования пользователя -->
+    <div id="user-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3 id="modal-user-title">Добавить пользователя</h3>
+            <form id="user-form">
+                <input type="hidden" id="user-id" name="id">
+                <div class="form-group">
+                    <label for="modal-username">Имя пользователя</label>
+                    <input type="text" id="modal-username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="modal-email">Email</label>
+                    <input type="email" id="modal-email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="modal-fullname">Полное имя</label>
+                    <input type="text" id="modal-fullname" name="fullName" required>
+                </div>
+                <div class="form-group">
+                    <label for="modal-password">Пароль</label>
+                    <input type="password" id="modal-password" name="password">
+                    <small>Оставьте пустым, если не хотите менять пароль</small>
+                </div>
+                <div class="form-group">
+                    <label for="modal-role">Роль</label>
+                    <select id="modal-role" name="role" required>
+                        <option value="student">Студент</option>
+                        <option value="teacher">Преподаватель</option>
+                        <option value="admin">Администратор</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Сохранить</button>
+            </form>
+            <div id="user-modal-message" class="message"></div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для расписания -->
+    <div id="schedule-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3 id="modal-schedule-title">Добавить занятие</h3>
+            <form id="schedule-form">
+                <input type="hidden" id="schedule-id" name="id">
+                <div class="form-group">
+                    <label for="schedule-course">Курс</label>
+                    <select id="schedule-course" name="courseId" required>
+                        <!-- Опции будут загружены через JavaScript -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="schedule-instructor">Преподаватель</label>
+                    <select id="schedule-instructor" name="instructorId" required>
+                        <!-- Опции будут загружены через JavaScript -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="schedule-day">День недели</label>
+                    <select id="schedule-day" name="dayOfWeek" required>
+                        <option value="Понедельник">Понедельник</option>
+                        <option value="Вторник">Вторник</option>
+                        <option value="Среда">Среда</option>
+                        <option value="Четверг">Четверг</option>
+                        <option value="Пятница">Пятница</option>
+                        <option value="Суббота">Суббота</option>
+                        <option value="Воскресенье">Воскресенье</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="schedule-time">Время</label>
+                    <input type="text" id="schedule-time" name="time" placeholder="10:00-12:00" required>
+                </div>
+                <div class="form-group">
+                    <label for="schedule-room">Аудитория</label>
+                    <input type="text" id="schedule-room" name="room" required>
+                </div>
+                <div class="form-group">
+                    <label for="schedule-type">Тип занятия</label>
+                    <select id="schedule-type" name="type" required>
+                        <option value="Лекция">Лекция</option>
+                        <option value="Практика">Практика</option>
+                        <option value="Лабораторная">Лабораторная</option>
+                        <option value="Семинар">Семинар</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Сохранить</button>
+            </form>
+            <div id="schedule-modal-message" class="message"></div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для учебных процессов -->
+    <div id="process-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3 id="modal-process-title">Добавить модуль</h3>
+            <form id="process-form">
+                <input type="hidden" id="process-id" name="id">
+                <div class="form-group">
+                    <label for="process-course">Курс</label>
+                    <select id="process-course" name="courseId" required>
+                        <!-- Опции будут загружены через JavaScript -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="process-title">Название модуля</label>
+                    <input type="text" id="process-title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="process-description">Описание</label>
+                    <textarea id="process-description" name="description" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="process-order">Порядок</label>
+                    <input type="number" id="process-order" name="order" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="process-deadline">Дедлайн</label>
+                    <input type="date" id="process-deadline" name="deadline" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Сохранить</button>
+            </form>
+            <div id="process-modal-message" class="message"></div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для добавления/редактирования курса -->
+    <div id="course-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3 id="modal-course-title">Добавить курс</h3>
+            <form id="course-form">
+                <input type="hidden" id="course-id" name="id">
+                <div class="form-group">
+                    <label for="course-title">Название курса</label>
+                    <input type="text" id="course-title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="course-description">Описание</label>
+                    <textarea id="course-description" name="description" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="course-category">Категория</label>
+                    <input type="text" id="course-category" name="category" required>
+                </div>
+                <div class="form-group">
+                    <label for="course-instructor">Преподаватель</label>
+                    <select id="course-instructor" name="instructor" required>
+                        <!-- Опции будут загружены через JavaScript -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="course-duration">Длительность</label>
+                    <input type="text" id="course-duration" name="duration" placeholder="например: 3 месяца" required>
+                </div>
+                <div class="form-group">
+                    <label for="course-price">Цена (₽)</label>
+                    <input type="number" id="course-price" name="price" min="0" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Сохранить</button>
+            </form>
+            <div id="course-modal-message" class="message"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>О системе</h3>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/courses.html">Курсы</a></li>
+                        <li><a href="/feedback.html">Обратная связь</a></li>
+                        <li><a href="/login.html">Вход в систему</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Для студентов</h3>
+                    <ul>
+                        <li><a href="/courses.html">Каталог курсов</a></li>
+                        <li><a href="/dashboard.html">Личный кабинет</a></li>
+                        <li><a href="/feedback.html">Задать вопрос</a></li>
+                        <li><a href="/login.html">Регистрация</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Контакты</h3>
+                    <ul>
+                        <li>Email: info@edu-system.ru</li>
+                        <li>Телефон: +7 (495) 123-45-67</li>
+                        <li>Адрес: г. Москва, ул. Образовательная, д. 1</li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Социальные сети</h3>
+                    <ul>
+                        <li><a href="#">ВКонтакте</a></li>
+                        <li><a href="#">Telegram</a></li>
+                        <li><a href="#">YouTube</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Система управления образовательными учреждениями. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/auth.js"></script>
+    <script>
+        // Обновление навигации для админ-панели
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('/api/me');
+                if (response.ok) {
+                    const user = await response.json();
+                    // Показываем элементы навигации для администратора
+                    const userInfo = document.getElementById('user-info');
+                    const logoutLink = document.getElementById('logout-link');
+                    const dashboardLink = document.getElementById('dashboard-link');
+                    const adminLink = document.getElementById('admin-link');
+                    
+                    // Скрываем информацию о пользователе
+                    if (userInfo) {
+                        userInfo.style.display = 'none';
+                    }
+                    if (logoutLink) logoutLink.style.display = 'inline';
+                    if (dashboardLink) dashboardLink.style.display = 'inline';
+                    if (adminLink) adminLink.style.display = 'inline';
+                }
+            } catch (error) {
+                console.error('Ошибка проверки авторизации:', error);
+            }
+        });
+    </script>
+    <script src="/js/admin.js"></script>
+</body>
+</html>
+

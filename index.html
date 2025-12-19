@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Система управления образовательными учреждениями</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-brand">
+                    <h1>Образовательная Система</h1>
+                </div>
+                <button class="menu-toggle" id="menuToggle">☰</button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="/" class="active">Главная</a></li>
+                    <li><a href="/courses.html">Курсы</a></li>
+                    <li><a href="/feedback.html">Обратная связь</a></li>
+                    <li id="auth-menu">
+                        <a href="/login.html" id="login-link">Вход</a>
+                        <span id="user-info" style="display: none;"></span>
+                        <a href="/admin.html" id="admin-link" style="display: none;">Админ</a>
+                        <a href="/dashboard.html" id="dashboard-link" style="display: none;">Кабинет</a>
+                        <a href="#" id="logout-link" style="display: none;">Выход</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Слайдер -->
+        <section class="slider-section">
+            <div class="slider-container">
+                <div class="slider-wrapper">
+                    <div class="slide active">
+                        <div class="slide-content">
+                            <h2>Добро пожаловать в систему управления образовательными учреждениями</h2>
+                            <p>Мы предлагаем широкий спектр образовательных программ для вашего профессионального развития</p>
+                            <a href="/courses.html" class="btn btn-primary">Посмотреть курсы</a>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <div class="slide-content">
+                            <h2>Онлайн обучение нового поколения</h2>
+                            <p>Современные технологии и инновационные методики преподавания</p>
+                            <a href="/login.html" class="btn btn-primary">Начать обучение</a>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <div class="slide-content">
+                            <h2>Профессиональные преподаватели</h2>
+                            <p>Опытные специалисты с многолетним стажем помогут вам достичь ваших целей</p>
+                            <a href="/feedback.html" class="btn btn-primary">Связаться с нами</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="slider-controls">
+                    <button class="slider-btn prev" id="prevBtn">‹</button>
+                    <button class="slider-btn next" id="nextBtn">›</button>
+                </div>
+                <div class="slider-dots">
+                    <span class="dot active" data-slide="0"></span>
+                    <span class="dot" data-slide="1"></span>
+                    <span class="dot" data-slide="2"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Информационные блоки -->
+        <section class="info-blocks">
+            <div class="container">
+                <div class="info-grid">
+                    <div class="info-block">
+                        <div class="info-icon">📚</div>
+                        <h3>Более 50 курсов</h3>
+                        <p>Широкий выбор образовательных программ по различным направлениям</p>
+                    </div>
+                    <div class="info-block">
+                        <div class="info-icon">👥</div>
+                        <h3>5000+ студентов</h3>
+                        <p>Присоединяйтесь к тысячам довольных студентов по всему миру</p>
+                    </div>
+                    <div class="info-block">
+                        <div class="info-icon">⭐</div>
+                        <h3>Высокий рейтинг</h3>
+                        <p>Наши курсы получили высокие оценки от студентов и экспертов</p>
+                    </div>
+                    <div class="info-block">
+                        <div class="info-icon">🎓</div>
+                        <h3>Сертификаты</h3>
+                        <p>Получите официальный сертификат по окончании каждого курса</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="container">
+                <h2 class="section-title">Наши возможности</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">💻</div>
+                        <h3>Онлайн обучение</h3>
+                        <p>Доступ к курсам в любое время и в любом месте. Учитесь из дома, офиса или в дороге</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">👨‍🏫</div>
+                        <h3>Профессиональные преподаватели</h3>
+                        <p>Опытные специалисты с многолетним стажем и практическим опытом в индустрии</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📜</div>
+                        <h3>Сертификаты</h3>
+                        <p>Получите официальный сертификат по окончании курса, признанный работодателями</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⏰</div>
+                        <h3>Гибкий график</h3>
+                        <p>Учитесь в удобном для вас темпе без жестких дедлайнов и ограничений</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💬</div>
+                        <h3>Поддержка 24/7</h3>
+                        <p>Наша команда поддержки всегда готова помочь вам с любыми вопросами</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <h3>Обновляемый контент</h3>
+                        <p>Материалы курсов регулярно обновляются в соответствии с актуальными трендами</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="popular-courses">
+            <div class="container">
+                <h2>Популярные курсы</h2>
+                <div id="courses-preview" class="courses-grid">
+                    <!-- Курсы будут загружены через JavaScript -->
+                </div>
+                <div class="text-center">
+                    <a href="/courses.html" class="btn">Все курсы</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>О системе</h3>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/courses.html">Курсы</a></li>
+                        <li><a href="/feedback.html">Обратная связь</a></li>
+                        <li><a href="/login.html">Вход в систему</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Для студентов</h3>
+                    <ul>
+                        <li><a href="/courses.html">Каталог курсов</a></li>
+                        <li><a href="/dashboard.html">Личный кабинет</a></li>
+                        <li><a href="/feedback.html">Задать вопрос</a></li>
+                        <li><a href="/login.html">Регистрация</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Контакты</h3>
+                    <ul>
+                        <li>Email: info@edu-system.ru</li>
+                        <li>Телефон: +7 (495) 123-45-67</li>
+                        <li>Адрес: г. Москва, ул. Образовательная, д. 1</li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Социальные сети</h3>
+                    <ul>
+                        <li><a href="#">ВКонтакте</a></li>
+                        <li><a href="#">Telegram</a></li>
+                        <li><a href="#">YouTube</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Система управления образовательными учреждениями. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/slider.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>
+

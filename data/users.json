@@ -1,0 +1,164 @@
+[
+  {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@edu.ru",
+    "password": "admin123",
+    "role": "admin",
+    "fullName": "Администратор Системы",
+    "createdAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": 2,
+    "username": "student1",
+    "email": "student1@edu.ru",
+    "password": "student123",
+    "role": "student",
+    "fullName": "Иван Иванов",
+    "createdAt": "2024-01-15T00:00:00.000Z"
+  },
+  {
+    "id": 3,
+    "username": "teacher1",
+    "email": "teacher1@edu.ru",
+    "password": "teacher123",
+    "role": "teacher",
+    "fullName": "Петров Петр Петрович",
+    "createdAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": 4,
+    "username": "teacher2",
+    "email": "teacher2@edu.ru",
+    "password": "teacher123",
+    "role": "teacher",
+    "fullName": "Сидоров Сидор Сидорович",
+    "createdAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": 5,
+    "username": "userok",
+    "email": "userok@ok.com",
+    "password": "12345678",
+    "role": "student",
+    "fullName": "Стас Стас Стас",
+    "createdAt": "2025-12-19T15:50:07.085Z"
+  },
+  {
+    "id": 6,
+    "username": "maria_petrova",
+    "email": "maria.petrova@edu.ru",
+    "password": "student123",
+    "role": "student",
+    "fullName": "Мария Петрова",
+    "createdAt": "2024-02-10T00:00:00.000Z"
+  },
+  {
+    "id": 7,
+    "username": "alex_sidorov",
+    "email": "alex.sidorov@edu.ru",
+    "password": "student123",
+    "role": "student",
+    "fullName": "Александр Сидоров",
+    "createdAt": "2024-02-15T00:00:00.000Z"
+  },
+  {
+    "id": 8,
+    "username": "anna_ivanova",
+    "email": "anna.ivanova@edu.ru",
+    "password": "student123",
+    "role": "student",
+    "fullName": "Анна Иванова",
+    "createdAt": "2024-03-01T00:00:00.000Z"
+  },
+  {
+    "id": 9,
+    "username": "dmitry_kuznetsov",
+    "email": "dmitry.kuznetsov@edu.ru",
+    "password": "student123",
+    "role": "student",
+    "fullName": "Дмитрий Кузнецов",
+    "createdAt": "2024-03-10T00:00:00.000Z"
+  },
+  {
+    "id": 10,
+    "username": "elena_smirnova",
+    "email": "elena.smirnova@edu.ru",
+    "password": "student123",
+    "role": "student",
+    "fullName": "Елена Смирнова",
+    "createdAt": "2024-03-15T00:00:00.000Z"
+  },
+  {
+    "id": 11,
+    "username": "sergey_volkov",
+    "email": "sergey.volkov@edu.ru",
+    "password": "student123",
+    "role": "student",
+    "fullName": "Сергей Волков",
+    "createdAt": "2024-04-01T00:00:00.000Z"
+  },
+  {
+    "id": 12,
+    "username": "olga_nikolaeva",
+    "email": "olga.nikolaeva@edu.ru",
+    "password": "student123",
+    "role": "student",
+    "fullName": "Ольга Николаева",
+    "createdAt": "2024-04-10T00:00:00.000Z"
+  },
+  {
+    "id": 13,
+    "username": "teacher3",
+    "email": "teacher3@edu.ru",
+    "password": "teacher123",
+    "role": "teacher",
+    "fullName": "Козлова Ксения Константиновна",
+    "createdAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": 14,
+    "username": "teacher4",
+    "email": "teacher4@edu.ru",
+    "password": "teacher123",
+    "role": "teacher",
+    "fullName": "Новиков Николай Николаевич",
+    "createdAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": 15,
+    "username": "teacher5",
+    "email": "teacher5@edu.ru",
+    "password": "teacher123",
+    "role": "teacher",
+    "fullName": "Морозова Мария Михайловна",
+    "createdAt": "2024-01-05T00:00:00.000Z"
+  },
+  {
+    "id": 16,
+    "username": "teacher6",
+    "email": "teacher6@edu.ru",
+    "password": "teacher123",
+    "role": "teacher",
+    "fullName": "Федоров Федор Федорович",
+    "createdAt": "2024-01-10T00:00:00.000Z"
+  },
+  {
+    "id": 17,
+    "username": "teacher7",
+    "email": "teacher7@edu.ru",
+    "password": "teacher123",
+    "role": "teacher",
+    "fullName": "Соколова Светлана Сергеевна",
+    "createdAt": "2024-01-15T00:00:00.000Z"
+  },
+  {
+    "id": 18,
+    "username": "teacher8",
+    "email": "teacher8@edu.ru",
+    "password": "teacher123",
+    "role": "teacher",
+    "fullName": "Лебедев Леонид Леонидович",
+    "createdAt": "2024-01-20T00:00:00.000Z"
+  }
+]
