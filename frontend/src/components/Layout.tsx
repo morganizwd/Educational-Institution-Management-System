@@ -21,7 +21,8 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         <nav className="navbar">
           <div className="container">
             <div className="nav-brand">
-              <h1>Образовательная Система</h1>
+              <div className="logo-icon">🎓</div>
+              <h1>Универсум</h1>
             </div>
             <button
               className="menu-toggle"
@@ -130,9 +131,9 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             <div className="footer-column">
               <h3>Контакты</h3>
               <ul>
-                <li>Email: info@edu-system.ru</li>
-                <li>Телефон: +7 (495) 123-45-67</li>
-                <li>Адрес: г. Москва, ул. Образовательная, д. 1</li>
+                <li>Email: info@edu-system.by</li>
+                <li>Телефон: +375 (29) 123-45-67</li>
+                <li>Адрес: г. Минск, ул. Образовательная, д. 1</li>
               </ul>
             </div>
             <div className="footer-column">
