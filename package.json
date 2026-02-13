@@ -1,11 +1,15 @@
 {
   "name": "educational-institution-management-system",
-  "version": "1.0.0",
-  "description": "Система управления образовательными учреждениями",
-  "main": "server.js",
+  "version": "2.0.0",
+  "description": "Система управления образовательными учреждениями (PERN-версия)",
+  "main": "backend/app.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "start": "node backend/app.js",
+    "dev": "nodemon backend/app.js",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build:frontend": "cd frontend && npm run build",
+    "build": "npm run build:frontend",
+    "install:all": "npm install && cd frontend && npm install"
   },
   "keywords": [
     "education",
@@ -15,7 +19,17 @@
   "author": "",
   "license": "MIT",
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }
 
