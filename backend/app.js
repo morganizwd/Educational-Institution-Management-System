@@ -180,7 +180,7 @@ app.get('/api/me', requireAuth, (req, res) => {
 app.get('/api/courses', async (_req, res) => {
   try {
     const result = await db.query(
-      'SELECT id, title, description, duration, instructor, price, category, available, created_at AS "createdAt" FROM courses ORDER BY id'
+      'SELECT id, title, description, duration, instructor, price, category, image_url AS "imageUrl", available, created_at AS "createdAt" FROM courses ORDER BY id'
     );
     return res.status(200).json(result.rows);
   } catch (e) {
@@ -196,7 +196,7 @@ app.get('/api/courses/:id', async (req, res) => {
   }
   try {
     const result = await db.query(
-      'SELECT id, title, description, duration, instructor, price, category, available, created_at AS "createdAt" FROM courses WHERE id = $1',
+      'SELECT id, title, description, duration, instructor, price, category, image_url AS "imageUrl", available, created_at AS "createdAt" FROM courses WHERE id = $1',
       [id]
     );
     if (result.rowCount === 0) {
@@ -394,6 +394,62 @@ app.post('/api/admin/users', requireAdmin, async (req, res) => {
   }
 });
 
+// Обновление профиля текущего пользователя
+app.put('/api/profile', requireAuth, async (req, res) => {
+  const currentUser = req.currentUser;
+  const { username, fullName, password } = req.body;
+  
+  if (!username || !fullName) {
+    return res.status(400).json({ error: 'Имя пользователя и полное имя обязательны' });
+  }
+  
+  try {
+    // Проверяем, не занято ли имя пользователя другим пользователем
+    const existing = await db.query(
+      `SELECT 1 FROM users WHERE username = $1 AND id <> $2`,
+      [username, currentUser.id]
+    );
+    if (existing.rowCount > 0) {
+      return res.status(400).json({ error: 'Пользователь с таким именем уже существует' });
+    }
+    
+    if (password) {
+      // Обновляем с паролем
+      await db.query(
+        `UPDATE users
+         SET username = $1, full_name = $2, password = $3
+         WHERE id = $4`,
+        [username, fullName, password, currentUser.id]
+      );
+    } else {
+      // Обновляем без пароля
+      await db.query(
+        `UPDATE users
+         SET username = $1, full_name = $2
+         WHERE id = $3`,
+        [username, fullName, currentUser.id]
+      );
+    }
+    
+    // Возвращаем обновленные данные пользователя
+    const result = await db.query(
+      `SELECT id, username, email, full_name AS "fullName",
+              role, created_at AS "createdAt"
+       FROM users
+       WHERE id = $1`,
+      [currentUser.id]
+    );
+    
+    return res.status(200).json({ 
+      message: 'Профиль обновлен', 
+      user: result.rows[0] 
+    });
+  } catch (e) {
+    console.error('Update profile error', e);
+    return res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
 app.put('/api/admin/users/:id', requireAdmin, async (req, res) => {
   const id = Number(req.params.id);
   if (Number.isNaN(id)) {
@@ -476,6 +532,7 @@ app.post('/api/admin/courses', requireAdmin, async (req, res) => {
     instructor,
     price,
     category,
+    imageUrl,
     available,
   } = req.body;
   if (!title || !description || !duration || !instructor || !category) {
@@ -483,11 +540,11 @@ app.post('/api/admin/courses', requireAdmin, async (req, res) => {
   }
   try {
     const insertRes = await db.query(
-      `INSERT INTO courses (title, description, duration, instructor, price, category, available)
-       VALUES ($1, $2, $3, $4, $5, $6, COALESCE($7, TRUE))
+      `INSERT INTO courses (title, description, duration, instructor, price, category, image_url, available)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, COALESCE($8, TRUE))
        RETURNING id, title, description, duration, instructor, price, category,
-                 available, created_at AS "createdAt"`,
-      [title, description, duration, instructor, Number(price), category, available]
+                 image_url AS "imageUrl", available, created_at AS "createdAt"`,
+      [title, description, duration, instructor, Number(price), category, imageUrl || null, available]
     );
     return res
       .status(201)
@@ -510,6 +567,7 @@ app.put('/api/admin/courses/:id', requireAdmin, async (req, res) => {
     instructor,
     price,
     category,
+    imageUrl,
     available,
   } = req.body;
   try {
@@ -525,13 +583,14 @@ app.put('/api/admin/courses/:id', requireAdmin, async (req, res) => {
            instructor = $4,
            price = $5,
            category = $6,
-           available = COALESCE($7, available)
-       WHERE id = $8`,
-      [title, description, duration, instructor, Number(price), category, available, id]
+           image_url = $7,
+           available = COALESCE($8, available)
+       WHERE id = $9`,
+      [title, description, duration, instructor, Number(price), category, imageUrl || null, available, id]
     );
     const result = await db.query(
       `SELECT id, title, description, duration, instructor,
-              price, category, available, created_at AS "createdAt"
+              price, category, image_url AS "imageUrl", available, created_at AS "createdAt"
        FROM courses
        WHERE id = $1`,
       [id]
@@ -902,8 +961,10 @@ app.get('/api/teacher/schedule', requireAuth, async (req, res) => {
       .json({ error: 'Доступ запрещен. Требуются права преподавателя' });
   }
   try {
-    const result = await db.query(
-      `SELECT s.id,
+    // Админ видит все занятия, учитель - только свои
+    const query =
+      currentUser.role === 'admin'
+        ? `SELECT s.id,
               s.course_id     AS "courseId",
               s.instructor_id AS "instructorId",
               s.title,
@@ -914,13 +975,32 @@ app.get('/api/teacher/schedule', requireAuth, async (req, res) => {
               s.type,
               s.active,
               s.created_at    AS "createdAt",
-              c.title         AS "courseTitle"
+              c.title         AS "courseTitle",
+              u.full_name     AS "instructorName"
        FROM schedule s
        JOIN courses c ON c.id = s.course_id
+       JOIN users u ON u.id = s.instructor_id
+       ORDER BY s.day_of_week, s.time`
+        : `SELECT s.id,
+              s.course_id     AS "courseId",
+              s.instructor_id AS "instructorId",
+              s.title,
+              s.content,
+              s.day_of_week   AS "dayOfWeek",
+              s.time,
+              s.room,
+              s.type,
+              s.active,
+              s.created_at    AS "createdAt",
+              c.title         AS "courseTitle",
+              u.full_name     AS "instructorName"
+       FROM schedule s
+       JOIN courses c ON c.id = s.course_id
+       JOIN users u ON u.id = s.instructor_id
        WHERE s.instructor_id = $1
-       ORDER BY s.day_of_week, s.time`,
-      [currentUser.id]
-    );
+       ORDER BY s.day_of_week, s.time`;
+    const params = currentUser.role === 'admin' ? [] : [currentUser.id];
+    const result = await db.query(query, params);
     return res.status(200).json(result.rows);
   } catch (e) {
     console.error('Teacher schedule error', e);
@@ -1081,6 +1161,7 @@ app.get(
       if (scheduleRes.rowCount === 0) {
         return res.status(404).json({ error: 'Занятие не найдено' });
       }
+      // Админ может просматривать ответы по любым занятиям, учитель - только по своим
       if (
         currentUser.role === 'teacher' &&
         scheduleRes.rows[0].instructor_id !== currentUser.id
@@ -1143,6 +1224,7 @@ app.post(
       const { course_id: courseId, instructor_id: instructorId } =
         scheduleRes.rows[0];
 
+      // Админ может проверять ответы по любым занятиям, учитель - только по своим
       if (
         currentUser.role === 'teacher' &&
         instructorId !== currentUser.id

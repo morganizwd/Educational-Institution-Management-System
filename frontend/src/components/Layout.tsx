@@ -153,7 +153,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           </div>
           <div className="footer-bottom">
             <p>
-              &copy; 2024 Система управления образовательными учреждениями. Все права
+              &copy; 2026 Система управления образовательными учреждениями. Все права
               защищены.
             </p>
           </div>

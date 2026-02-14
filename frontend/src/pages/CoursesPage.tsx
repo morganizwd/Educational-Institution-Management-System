@@ -9,6 +9,7 @@ type Course = {
   instructor: string;
   price: number;
   category: string;
+  imageUrl?: string | null;
 };
 
 export const CoursesPage: React.FC = () => {
@@ -286,6 +287,19 @@ export const CoursesPage: React.FC = () => {
             )}
             {filteredAndSortedCourses.map((course) => (
               <div key={course.id} className="course-card">
+                {course.imageUrl && course.imageUrl.trim() !== '' && (
+                  <div className="course-image-container">
+                    <img 
+                      src={course.imageUrl} 
+                      alt={course.title}
+                      className="course-image"
+                      onError={(e) => {
+                        // Скрываем изображение при ошибке загрузки
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
+                  </div>
+                )}
                 <div className="course-card-header">
                   <h3>{course.title}</h3>
                   <p>{course.category}</p>

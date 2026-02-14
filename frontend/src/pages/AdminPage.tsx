@@ -19,6 +19,7 @@ type Course = {
   instructor: string;
   price: number;
   category: string;
+  imageUrl?: string | null;
   available: boolean;
   createdAt: string;
 };
@@ -238,13 +239,20 @@ export const AdminPage: React.FC = () => {
     }
   };
 
-  // Load teachers for schedule form
+  // Load teachers for schedule and course forms
   const loadTeachers = async () => {
     try {
-      const res = await fetch('/api/admin/users?role=teacher');
+      // Загружаем всех пользователей с ролями teacher и admin
+      const res = await fetch('/api/admin/users', {
+        credentials: 'include',
+      });
       if (!res.ok) throw new Error();
       const data: UserRow[] = await res.json();
-      setTeachers(data);
+      // Фильтруем только преподавателей и админов
+      const teachersAndAdmins = data.filter(
+        (u) => u.role === 'teacher' || u.role === 'admin'
+      );
+      setTeachers(teachersAndAdmins);
     } catch {
       alert('Ошибка загрузки преподавателей');
     }
@@ -264,6 +272,7 @@ export const AdminPage: React.FC = () => {
         void loadCourses();
       } else if (activeTab === 'courses') {
         void loadCourses();
+        void loadTeachers();
       } else if (activeTab === 'feedback') {
         void loadFeedback();
       }
@@ -386,6 +395,7 @@ export const AdminPage: React.FC = () => {
       instructor: formData.get('instructor') as string,
       price: Number(formData.get('price')),
       category: formData.get('category') as string,
+      imageUrl: (formData.get('imageUrl') as string)?.trim() || null,
       available: formData.get('available') === 'true',
     };
 
@@ -524,70 +534,88 @@ export const AdminPage: React.FC = () => {
             </div>
 
             {showUserForm && (
-              <div className="admin-form-container" style={{ marginBottom: '20px', padding: '20px', border: '1px solid #ddd', borderRadius: '5px' }}>
-                <h4>{editingUser ? 'Редактировать пользователя' : 'Новый пользователь'}</h4>
-                <form onSubmit={handleUserSubmit}>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Имя пользователя: *</label>
-                    <input 
-                      type="text" 
-                      name="username" 
-                      required
-                      defaultValue={editingUser?.username || ''}
-                    />
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Email: *</label>
-                    <input 
-                      type="email" 
-                      name="email" 
-                      required
-                      defaultValue={editingUser?.email || ''}
-                    />
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Полное имя: *</label>
-                    <input 
-                      type="text" 
-                      name="fullName" 
-                      required
-                      defaultValue={editingUser?.fullName || ''}
-                    />
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Роль: *</label>
-                    <select name="role" required defaultValue={editingUser?.role || 'student'}>
-                      <option value="student">Студент</option>
-                      <option value="teacher">Преподаватель</option>
-                      <option value="admin">Администратор</option>
-                    </select>
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Пароль: {editingUser ? '(оставьте пустым, чтобы не менять)' : '*'}</label>
-                    <input 
-                      type="password" 
-                      name="password" 
-                      required={!editingUser}
-                      placeholder={editingUser ? 'Оставьте пустым, чтобы не менять' : 'Введите пароль'}
-                    />
-                  </div>
-                  <div>
-                    <button type="submit" className="btn btn-primary">
-                      {editingUser ? 'Сохранить' : 'Создать'}
-                    </button>
+              <div className="modal-overlay" onClick={() => {
+                setShowUserForm(false);
+                setEditingUser(null);
+              }}>
+                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                  <div className="modal-header">
+                    <h4>{editingUser ? 'Редактировать пользователя' : 'Новый пользователь'}</h4>
                     <button 
-                      type="button" 
-                      className="btn btn-secondary"
+                      className="modal-close"
                       onClick={() => {
                         setShowUserForm(false);
                         setEditingUser(null);
                       }}
-                      style={{ marginLeft: '10px' }}
+                      aria-label="Закрыть"
                     >
-                      Отмена
+                      ×
                     </button>
                   </div>
-                </form>
+                  <form onSubmit={handleUserSubmit}>
+                    <div className="modal-body">
+                      <div className="form-group">
+                        <label>Имя пользователя: *</label>
+                        <input 
+                          type="text" 
+                          name="username" 
+                          required
+                          defaultValue={editingUser?.username || ''}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Email: *</label>
+                        <input 
+                          type="email" 
+                          name="email" 
+                          required
+                          defaultValue={editingUser?.email || ''}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Полное имя: *</label>
+                        <input 
+                          type="text" 
+                          name="fullName" 
+                          required
+                          defaultValue={editingUser?.fullName || ''}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Роль: *</label>
+                        <select name="role" required defaultValue={editingUser?.role || 'student'}>
+                          <option value="student">Студент</option>
+                          <option value="teacher">Преподаватель</option>
+                          <option value="admin">Администратор</option>
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <label>Пароль: {editingUser ? '(оставьте пустым, чтобы не менять)' : '*'}</label>
+                        <input 
+                          type="password" 
+                          name="password" 
+                          required={!editingUser}
+                          placeholder={editingUser ? 'Оставьте пустым, чтобы не менять' : 'Введите пароль'}
+                        />
+                      </div>
+                    </div>
+                    <div className="modal-footer">
+                      <button 
+                        type="button" 
+                        className="btn btn-secondary"
+                        onClick={() => {
+                          setShowUserForm(false);
+                          setEditingUser(null);
+                        }}
+                      >
+                        Отмена
+                      </button>
+                      <button type="submit" className="btn btn-primary">
+                        {editingUser ? 'Сохранить' : 'Создать'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
               </div>
             )}
 
@@ -668,104 +696,122 @@ export const AdminPage: React.FC = () => {
             </div>
 
             {showScheduleForm && (
-              <div className="admin-form-container" style={{ marginBottom: '20px', padding: '20px', border: '1px solid #ddd', borderRadius: '5px' }}>
-                <h4>{editingSchedule ? 'Редактировать занятие' : 'Новое занятие'}</h4>
-                <form onSubmit={handleScheduleSubmit}>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Курс: *</label>
-                    <select name="courseId" required defaultValue={editingSchedule?.courseId}>
-                      <option value="">Выберите курс</option>
-                      {courses.map((c) => (
-                        <option key={c.id} value={c.id}>{c.title}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Преподаватель: *</label>
-                    <select name="instructorId" required defaultValue={editingSchedule?.instructorId}>
-                      <option value="">Выберите преподавателя</option>
-                      {teachers.map((t) => (
-                        <option key={t.id} value={t.id}>{t.fullName}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Название темы:</label>
-                    <input 
-                      type="text" 
-                      name="title" 
-                      defaultValue={editingSchedule?.title || ''}
-                      placeholder="Введите название темы"
-                    />
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Содержание:</label>
-                    <textarea 
-                      name="content" 
-                      rows={4}
-                      defaultValue={editingSchedule?.content || ''}
-                      placeholder="Текст лекции, ссылки, изображения..."
-                    />
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>День недели: *</label>
-                    <select name="dayOfWeek" required defaultValue={editingSchedule?.dayOfWeek}>
-                      <option value="">Выберите день</option>
-                      <option value="Понедельник">Понедельник</option>
-                      <option value="Вторник">Вторник</option>
-                      <option value="Среда">Среда</option>
-                      <option value="Четверг">Четверг</option>
-                      <option value="Пятница">Пятница</option>
-                      <option value="Суббота">Суббота</option>
-                      <option value="Воскресенье">Воскресенье</option>
-                    </select>
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Время: *</label>
-                    <input 
-                      type="text" 
-                      name="time" 
-                      required
-                      defaultValue={editingSchedule?.time || ''}
-                      placeholder="10:00-12:00"
-                    />
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Аудитория: *</label>
-                    <input 
-                      type="text" 
-                      name="room" 
-                      required
-                      defaultValue={editingSchedule?.room || ''}
-                      placeholder="Аудитория 101"
-                    />
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Тип: *</label>
-                    <select name="type" required defaultValue={editingSchedule?.type}>
-                      <option value="">Выберите тип</option>
-                      <option value="Лекция">Лекция</option>
-                      <option value="Практика">Практика</option>
-                      <option value="Лабораторная">Лабораторная</option>
-                    </select>
-                  </div>
-                  <div>
-                    <button type="submit" className="btn btn-primary">
-                      {editingSchedule ? 'Сохранить' : 'Создать'}
-                    </button>
+              <div className="modal-overlay" onClick={() => {
+                setShowScheduleForm(false);
+                setEditingSchedule(null);
+              }}>
+                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                  <div className="modal-header">
+                    <h4>{editingSchedule ? 'Редактировать занятие' : 'Новое занятие'}</h4>
                     <button 
-                      type="button" 
-                      className="btn btn-secondary"
+                      className="modal-close"
                       onClick={() => {
                         setShowScheduleForm(false);
                         setEditingSchedule(null);
                       }}
-                      style={{ marginLeft: '10px' }}
+                      aria-label="Закрыть"
                     >
-                      Отмена
+                      ×
                     </button>
                   </div>
-                </form>
+                  <form onSubmit={handleScheduleSubmit}>
+                    <div className="modal-body">
+                      <div className="form-group">
+                        <label>Курс: *</label>
+                        <select name="courseId" required defaultValue={editingSchedule?.courseId}>
+                          <option value="">Выберите курс</option>
+                          {courses.map((c) => (
+                            <option key={c.id} value={c.id}>{c.title}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <label>Преподаватель: *</label>
+                        <select name="instructorId" required defaultValue={editingSchedule?.instructorId}>
+                          <option value="">Выберите преподавателя</option>
+                          {teachers.map((t) => (
+                            <option key={t.id} value={t.id}>{t.fullName}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <label>Название темы:</label>
+                        <input 
+                          type="text" 
+                          name="title" 
+                          defaultValue={editingSchedule?.title || ''}
+                          placeholder="Введите название темы"
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Содержание:</label>
+                        <textarea 
+                          name="content" 
+                          rows={4}
+                          defaultValue={editingSchedule?.content || ''}
+                          placeholder="Текст лекции, ссылки, изображения..."
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>День недели: *</label>
+                        <select name="dayOfWeek" required defaultValue={editingSchedule?.dayOfWeek}>
+                          <option value="">Выберите день</option>
+                          <option value="Понедельник">Понедельник</option>
+                          <option value="Вторник">Вторник</option>
+                          <option value="Среда">Среда</option>
+                          <option value="Четверг">Четверг</option>
+                          <option value="Пятница">Пятница</option>
+                          <option value="Суббота">Суббота</option>
+                          <option value="Воскресенье">Воскресенье</option>
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <label>Время: *</label>
+                        <input 
+                          type="text" 
+                          name="time" 
+                          required
+                          defaultValue={editingSchedule?.time || ''}
+                          placeholder="10:00-12:00"
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Аудитория: *</label>
+                        <input 
+                          type="text" 
+                          name="room" 
+                          required
+                          defaultValue={editingSchedule?.room || ''}
+                          placeholder="Аудитория 101"
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Тип: *</label>
+                        <select name="type" required defaultValue={editingSchedule?.type}>
+                          <option value="">Выберите тип</option>
+                          <option value="Лекция">Лекция</option>
+                          <option value="Практика">Практика</option>
+                          <option value="Лабораторная">Лабораторная</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="modal-footer">
+                      <button 
+                        type="button" 
+                        className="btn btn-secondary"
+                        onClick={() => {
+                          setShowScheduleForm(false);
+                          setEditingSchedule(null);
+                        }}
+                      >
+                        Отмена
+                      </button>
+                      <button type="submit" className="btn btn-primary">
+                        {editingSchedule ? 'Сохранить' : 'Создать'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
               </div>
             )}
 
@@ -850,71 +896,89 @@ export const AdminPage: React.FC = () => {
             </div>
 
             {showProcessForm && (
-              <div className="admin-form-container" style={{ marginBottom: '20px', padding: '20px', border: '1px solid #ddd', borderRadius: '5px' }}>
-                <h4>{editingProcess ? 'Редактировать модуль' : 'Новый модуль'}</h4>
-                <form onSubmit={handleProcessSubmit}>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Курс: *</label>
-                    <select name="courseId" required defaultValue={editingProcess?.courseId}>
-                      <option value="">Выберите курс</option>
-                      {courses.map((c) => (
-                        <option key={c.id} value={c.id}>{c.title}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Название: *</label>
-                    <input 
-                      type="text" 
-                      name="title" 
-                      required
-                      defaultValue={editingProcess?.title || ''}
-                    />
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Описание: *</label>
-                    <textarea 
-                      name="description" 
-                      rows={4}
-                      required
-                      defaultValue={editingProcess?.description || ''}
-                    />
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Порядок: *</label>
-                    <input 
-                      type="number" 
-                      name="order" 
-                      required
-                      min="1"
-                      defaultValue={editingProcess?.order || ''}
-                    />
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Срок сдачи:</label>
-                    <input 
-                      type="date" 
-                      name="deadline"
-                      defaultValue={editingProcess?.deadline ? editingProcess.deadline.split('T')[0] : ''}
-                    />
-                  </div>
-                  <div>
-                    <button type="submit" className="btn btn-primary">
-                      {editingProcess ? 'Сохранить' : 'Создать'}
-                    </button>
+              <div className="modal-overlay" onClick={() => {
+                setShowProcessForm(false);
+                setEditingProcess(null);
+              }}>
+                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                  <div className="modal-header">
+                    <h4>{editingProcess ? 'Редактировать модуль' : 'Новый модуль'}</h4>
                     <button 
-                      type="button" 
-                      className="btn btn-secondary"
+                      className="modal-close"
                       onClick={() => {
                         setShowProcessForm(false);
                         setEditingProcess(null);
                       }}
-                      style={{ marginLeft: '10px' }}
+                      aria-label="Закрыть"
                     >
-                      Отмена
+                      ×
                     </button>
                   </div>
-                </form>
+                  <form onSubmit={handleProcessSubmit}>
+                    <div className="modal-body">
+                      <div className="form-group">
+                        <label>Курс: *</label>
+                        <select name="courseId" required defaultValue={editingProcess?.courseId}>
+                          <option value="">Выберите курс</option>
+                          {allCourses.map((c) => (
+                            <option key={c.id} value={c.id}>{c.title}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <label>Название: *</label>
+                        <input 
+                          type="text" 
+                          name="title" 
+                          required
+                          defaultValue={editingProcess?.title || ''}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Описание: *</label>
+                        <textarea 
+                          name="description" 
+                          rows={4}
+                          required
+                          defaultValue={editingProcess?.description || ''}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Порядок: *</label>
+                        <input 
+                          type="number" 
+                          name="order" 
+                          required
+                          min="1"
+                          defaultValue={editingProcess?.order || ''}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Срок сдачи:</label>
+                        <input 
+                          type="date" 
+                          name="deadline"
+                          defaultValue={editingProcess?.deadline ? editingProcess.deadline.split('T')[0] : ''}
+                        />
+                      </div>
+                    </div>
+                    <div className="modal-footer">
+                      <button 
+                        type="button" 
+                        className="btn btn-secondary"
+                        onClick={() => {
+                          setShowProcessForm(false);
+                          setEditingProcess(null);
+                        }}
+                      >
+                        Отмена
+                      </button>
+                      <button type="submit" className="btn btn-primary">
+                        {editingProcess ? 'Сохранить' : 'Создать'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
               </div>
             )}
 
@@ -997,90 +1061,128 @@ export const AdminPage: React.FC = () => {
             </div>
 
             {showCourseForm && (
-              <div className="admin-form-container" style={{ marginBottom: '20px', padding: '20px', border: '1px solid #ddd', borderRadius: '5px' }}>
-                <h4>{editingCourse ? 'Редактировать курс' : 'Новый курс'}</h4>
-                <form onSubmit={handleCourseSubmit}>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Название: *</label>
-                    <input 
-                      type="text" 
-                      name="title" 
-                      required
-                      defaultValue={editingCourse?.title || ''}
-                    />
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Описание: *</label>
-                    <textarea 
-                      name="description" 
-                      rows={4}
-                      required
-                      defaultValue={editingCourse?.description || ''}
-                    />
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Длительность: *</label>
-                    <input 
-                      type="text" 
-                      name="duration" 
-                      required
-                      defaultValue={editingCourse?.duration || ''}
-                      placeholder="3 месяца"
-                    />
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Преподаватель: *</label>
-                    <input 
-                      type="text" 
-                      name="instructor" 
-                      required
-                      defaultValue={editingCourse?.instructor || ''}
-                    />
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Цена: *</label>
-                    <input 
-                      type="number" 
-                      name="price" 
-                      required
-                      min="0"
-                      defaultValue={editingCourse?.price || ''}
-                    />
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Категория: *</label>
-                    <input 
-                      type="text" 
-                      name="category" 
-                      required
-                      defaultValue={editingCourse?.category || ''}
-                      placeholder="Программирование"
-                    />
-                  </div>
-                  <div style={{ marginBottom: '10px' }}>
-                    <label>Доступен:</label>
-                    <select name="available" defaultValue={editingCourse?.available ? 'true' : 'false'}>
-                      <option value="true">Да</option>
-                      <option value="false">Нет</option>
-                    </select>
-                  </div>
-                  <div>
-                    <button type="submit" className="btn btn-primary">
-                      {editingCourse ? 'Сохранить' : 'Создать'}
-                    </button>
+              <div className="modal-overlay" onClick={() => {
+                setShowCourseForm(false);
+                setEditingCourse(null);
+              }}>
+                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                  <div className="modal-header">
+                    <h4>{editingCourse ? 'Редактировать курс' : 'Новый курс'}</h4>
                     <button 
-                      type="button" 
-                      className="btn btn-secondary"
+                      className="modal-close"
                       onClick={() => {
                         setShowCourseForm(false);
                         setEditingCourse(null);
                       }}
-                      style={{ marginLeft: '10px' }}
+                      aria-label="Закрыть"
                     >
-                      Отмена
+                      ×
                     </button>
                   </div>
-                </form>
+                  <form onSubmit={handleCourseSubmit}>
+                    <div className="modal-body">
+                      <div className="form-group">
+                        <label>Название: *</label>
+                        <input 
+                          type="text" 
+                          name="title" 
+                          required
+                          defaultValue={editingCourse?.title || ''}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Описание: *</label>
+                        <textarea 
+                          name="description" 
+                          rows={4}
+                          required
+                          defaultValue={editingCourse?.description || ''}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Длительность: *</label>
+                        <input 
+                          type="text" 
+                          name="duration" 
+                          required
+                          defaultValue={editingCourse?.duration || ''}
+                          placeholder="3 месяца"
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Преподаватель: *</label>
+                        <select 
+                          name="instructor" 
+                          required
+                          defaultValue={editingCourse?.instructor || ''}
+                        >
+                          <option value="">Выберите преподавателя</option>
+                          {teachers
+                            .filter((t) => t.role === 'teacher' || t.role === 'admin')
+                            .map((teacher) => (
+                              <option key={teacher.id} value={teacher.fullName}>
+                                {teacher.fullName} ({teacher.email})
+                              </option>
+                            ))}
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <label>Цена: *</label>
+                        <input 
+                          type="number" 
+                          name="price" 
+                          required
+                          min="0"
+                          defaultValue={editingCourse?.price || ''}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Категория: *</label>
+                        <input 
+                          type="text" 
+                          name="category" 
+                          required
+                          defaultValue={editingCourse?.category || ''}
+                          placeholder="Программирование"
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Ссылка на изображение:</label>
+                        <input 
+                          type="url" 
+                          name="imageUrl" 
+                          defaultValue={editingCourse?.imageUrl || ''}
+                          placeholder="https://example.com/image.jpg"
+                        />
+                        <small>
+                          Укажите прямую ссылку на изображение (например, с Unsplash, Imgur и т.д.)
+                        </small>
+                      </div>
+                      <div className="form-group">
+                        <label>Доступен:</label>
+                        <select name="available" defaultValue={editingCourse?.available ? 'true' : 'false'}>
+                          <option value="true">Да</option>
+                          <option value="false">Нет</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="modal-footer">
+                      <button 
+                        type="button" 
+                        className="btn btn-secondary"
+                        onClick={() => {
+                          setShowCourseForm(false);
+                          setEditingCourse(null);
+                        }}
+                      >
+                        Отмена
+                      </button>
+                      <button type="submit" className="btn btn-primary">
+                        {editingCourse ? 'Сохранить' : 'Создать'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
               </div>
             )}
 

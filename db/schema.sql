@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS courses (
   instructor  VARCHAR(255) NOT NULL,
   price       INTEGER      NOT NULL,
   category    VARCHAR(100) NOT NULL,
+  image_url   VARCHAR(500),
   available   BOOLEAN      NOT NULL DEFAULT TRUE,
   created_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
