@@ -1,6 +1,5 @@
 const { Pool } = require('pg');
 
-// Use environment variables for DB config; provide sensible defaults for local dev
 const pool = new Pool({
   host: process.env.PGHOST || 'localhost',
   port: process.env.PGPORT ? Number(process.env.PGPORT) : 5432,

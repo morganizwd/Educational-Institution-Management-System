@@ -22,13 +22,11 @@ export const HomePage: React.FC = () => {
         const data: Course[] = await res.json();
         setCourses(data.slice(0, 3));
       } catch {
-        // ignore
       }
     };
     void loadPopularCourses();
   }, []);
 
-  // Слайдер: имитируем прежнюю логику через состояние
   const [currentSlide, setCurrentSlide] = useState(0);
   useEffect(() => {
     const id = setInterval(
@@ -206,7 +204,6 @@ export const HomePage: React.FC = () => {
                       alt={course.title}
                       className="course-image"
                       onError={(e) => {
-                        // Скрываем изображение при ошибке загрузки
                         (e.target as HTMLImageElement).style.display = 'none';
                       }}
                     />

@@ -1,10 +1,5 @@
--- Seed data for Educational Institution Management System
--- Total: ~50 records across all entities
+TRUNCATE TABLE lesson_submissions, educational_processes, schedule, feedback, enrollments, courses, users, sessions CASCADE;
 
--- Clear existing data (optional - comment out if you want to keep existing data)
--- TRUNCATE TABLE lesson_submissions, educational_processes, schedule, feedback, enrollments, courses, users, sessions CASCADE;
-
--- Insert Users (~10 records)
 INSERT INTO users (username, email, password, role, full_name) VALUES
 ('admin', 'admin@edu.ru', 'admin123', 'admin', 'Администратор Системы'),
 ('teacher1', 'teacher1@edu.ru', 'teacher123', 'teacher', 'Иванов Иван Иванович'),
@@ -18,19 +13,17 @@ INSERT INTO users (username, email, password, role, full_name) VALUES
 ('student6', 'student6@edu.ru', 'student123', 'student', 'Соколова Ольга Андреевна')
 ON CONFLICT (username) DO NOTHING;
 
--- Insert Courses (~8 records)
-INSERT INTO courses (title, description, duration, instructor, price, category) VALUES
-('Основы программирования на Python', 'Изучение базовых концепций программирования на языке Python. Включает работу с переменными, циклами, функциями и структурами данных.', '3 месяца', 'Иванов Иван Иванович', 15000, 'Программирование'),
-('Веб-разработка: HTML, CSS, JavaScript', 'Полный курс по созданию современных веб-сайтов. Изучение HTML5, CSS3 и JavaScript с практическими проектами.', '4 месяца', 'Петрова Мария Сергеевна', 20000, 'Веб-разработка'),
-('Базы данных и SQL', 'Изучение реляционных баз данных, проектирование схем, написание SQL-запросов и оптимизация производительности.', '2 месяца', 'Сидоров Петр Александрович', 12000, 'Базы данных'),
-('React и современный фронтенд', 'Продвинутый курс по разработке пользовательских интерфейсов с использованием React, TypeScript и современных инструментов.', '3 месяца', 'Петрова Мария Сергеевна', 25000, 'Веб-разработка'),
-('Node.js и серверная разработка', 'Создание серверных приложений на Node.js, работа с Express, базами данных и API.', '3 месяца', 'Иванов Иван Иванович', 22000, 'Backend'),
-('Машинное обучение для начинающих', 'Введение в машинное обучение: алгоритмы, библиотеки Python, практические примеры.', '4 месяца', 'Сидоров Петр Александрович', 30000, 'Data Science'),
-('Мобильная разработка на React Native', 'Создание мобильных приложений для iOS и Android с использованием React Native.', '3 месяца', 'Петрова Мария Сергеевна', 28000, 'Мобильная разработка'),
-('DevOps и CI/CD', 'Автоматизация процессов разработки, настройка CI/CD пайплайнов, Docker, Kubernetes.', '2 месяца', 'Иванов Иван Иванович', 18000, 'DevOps')
+INSERT INTO courses (title, description, duration, instructor, price, category, image_url) VALUES
+('Основы программирования на Python', 'Изучение базовых концепций программирования на языке Python. Включает работу с переменными, циклами, функциями и структурами данных.', '3 месяца', 'Иванов Иван Иванович', 15000, 'Программирование', 'https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=800'),
+('Веб-разработка: HTML, CSS, JavaScript', 'Полный курс по созданию современных веб-сайтов. Изучение HTML5, CSS3 и JavaScript с практическими проектами.', '4 месяца', 'Петрова Мария Сергеевна', 20000, 'Веб-разработка', 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800'),
+('Базы данных и SQL', 'Изучение реляционных баз данных, проектирование схем, написание SQL-запросов и оптимизация производительности.', '2 месяца', 'Сидоров Петр Александрович', 12000, 'Базы данных', 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=800'),
+('React и современный фронтенд', 'Продвинутый курс по разработке пользовательских интерфейсов с использованием React, TypeScript и современных инструментов.', '3 месяца', 'Петрова Мария Сергеевна', 25000, 'Веб-разработка', 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800'),
+('Node.js и серверная разработка', 'Создание серверных приложений на Node.js, работа с Express, базами данных и API.', '3 месяца', 'Иванов Иван Иванович', 22000, 'Backend', 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800'),
+('Машинное обучение для начинающих', 'Введение в машинное обучение: алгоритмы, библиотеки Python, практические примеры.', '4 месяца', 'Сидоров Петр Александрович', 30000, 'Data Science', 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800'),
+('Мобильная разработка на React Native', 'Создание мобильных приложений для iOS и Android с использованием React Native.', '3 месяца', 'Петрова Мария Сергеевна', 28000, 'Мобильная разработка', 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800'),
+('DevOps и CI/CD', 'Автоматизация процессов разработки, настройка CI/CD пайплайнов, Docker, Kubernetes.', '2 месяца', 'Иванов Иван Иванович', 18000, 'DevOps', 'https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=800')
 ON CONFLICT DO NOTHING;
 
--- Insert Enrollments (~10 records)
 INSERT INTO enrollments (user_id, course_id, status, progress) VALUES
 ((SELECT id FROM users WHERE username = 'student1'), (SELECT id FROM courses WHERE title = 'Основы программирования на Python'), 'active', 45),
 ((SELECT id FROM users WHERE username = 'student1'), (SELECT id FROM courses WHERE title = 'Веб-разработка: HTML, CSS, JavaScript'), 'active', 30),
@@ -44,7 +37,6 @@ INSERT INTO enrollments (user_id, course_id, status, progress) VALUES
 ((SELECT id FROM users WHERE username = 'student6'), (SELECT id FROM courses WHERE title = 'Веб-разработка: HTML, CSS, JavaScript'), 'active', 10)
 ON CONFLICT (user_id, course_id) DO NOTHING;
 
--- Insert Schedule (~8 records)
 INSERT INTO schedule (course_id, instructor_id, title, content, day_of_week, time, room, type) VALUES
 ((SELECT id FROM courses WHERE title = 'Основы программирования на Python'), (SELECT id FROM users WHERE username = 'teacher1'), 
  'Введение в Python', 'На этом уроке мы изучим основы Python: синтаксис, переменные, типы данных. Материалы: https://docs.python.org/3/tutorial/', 
@@ -72,7 +64,6 @@ INSERT INTO schedule (course_id, instructor_id, title, content, day_of_week, tim
  'Вторник', '10:00-12:00', 'Аудитория 101', 'Практика')
 ON CONFLICT DO NOTHING;
 
--- Insert Lesson Submissions (~5 records)
 INSERT INTO lesson_submissions (enrollment_id, schedule_id, answer, is_approved) VALUES
 ((SELECT e.id FROM enrollments e JOIN users u ON e.user_id = u.id JOIN courses c ON e.course_id = c.id WHERE u.username = 'student1' AND c.title = 'Основы программирования на Python' LIMIT 1),
  (SELECT id FROM schedule WHERE title = 'Введение в Python' LIMIT 1),
@@ -91,7 +82,6 @@ INSERT INTO lesson_submissions (enrollment_id, schedule_id, answer, is_approved)
  'Изучил основные типы машинного обучения: обучение с учителем (supervised) и без учителя (unsupervised). Попробовал использовать scikit-learn для простой классификации.', false)
 ON CONFLICT (enrollment_id, schedule_id) DO NOTHING;
 
--- Insert Educational Processes (~4 records)
 INSERT INTO educational_processes (course_id, title, description, "order", materials, deadline) VALUES
 ((SELECT id FROM courses WHERE title = 'Основы программирования на Python'), 
  'Модуль 1: Основы синтаксиса', 
@@ -119,7 +109,6 @@ INSERT INTO educational_processes (course_id, title, description, "order", mater
  CURRENT_DATE + INTERVAL '2 weeks')
 ON CONFLICT DO NOTHING;
 
--- Insert Feedback (~5 records)
 INSERT INTO feedback (user_id, name, email, subject, message, status) VALUES
 ((SELECT id FROM users WHERE username = 'student1'), 'Козлов Алексей', 'student1@edu.ru', 'Вопрос по курсу Python', 'Здравствуйте! У меня возник вопрос по домашнему заданию по циклам. Можно ли получить дополнительную консультацию?', 'new'),
 ((SELECT id FROM users WHERE username = 'student2'), 'Морозова Анна', 'student2@edu.ru', 'Благодарность', 'Спасибо за отличный курс по базам данных! Материал изложен очень понятно.', 'new'),
@@ -127,13 +116,3 @@ INSERT INTO feedback (user_id, name, email, subject, message, status) VALUES
 ((SELECT id FROM users WHERE username = 'student3'), 'Волков Дмитрий', 'student3@edu.ru', 'Техническая проблема', 'Не могу войти в личный кабинет. Постоянно выдает ошибку авторизации.', 'new'),
 ((SELECT id FROM users WHERE username = 'student4'), 'Новикова Елена', 'student4@edu.ru', 'Предложение', 'Предлагаю добавить больше практических заданий по машинному обучению. Спасибо!', 'new')
 ON CONFLICT DO NOTHING;
-
--- Total: ~50 records
--- Users: 10
--- Courses: 8
--- Enrollments: 10
--- Schedule: 8
--- Lesson Submissions: 5
--- Educational Processes: 4
--- Feedback: 5
--- Total: 50 records

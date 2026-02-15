@@ -1,5 +1,3 @@
--- PostgreSQL schema for Educational Institution Management System (PERN backend)
-
 CREATE TABLE IF NOT EXISTS users (
   id          SERIAL PRIMARY KEY,
   username    VARCHAR(100) NOT NULL UNIQUE,
@@ -58,7 +56,6 @@ CREATE TABLE IF NOT EXISTS schedule (
   created_at    TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
 
--- Ответы студентов по занятиям (урокам)
 CREATE TABLE IF NOT EXISTS lesson_submissions (
   id            SERIAL PRIMARY KEY,
   enrollment_id INTEGER     NOT NULL REFERENCES enrollments(id) ON DELETE CASCADE,

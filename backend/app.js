@@ -13,11 +13,8 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Serve React app static files (after build)
 const frontendDistPath = path.join(__dirname, '..', 'frontend', 'dist');
 app.use(express.static(frontendDistPath));
-
-// Helper: current user from session token
 async function getUserBySession(sessionToken) {
   if (!sessionToken) return null;
   const sessionRes = await db.query(
@@ -39,7 +36,6 @@ function generateSessionToken() {
   );
 }
 
-// Middleware: attach currentUser
 app.use(async (req, res, next) => {
   try {
     const cookies = req.cookies || {};
@@ -68,7 +64,6 @@ function requireAdmin(req, res, next) {
   next();
 }
 
-// ========== AUTH ==========
 
 app.post('/api/register', async (req, res) => {
   const { username, email, password, fullName } = req.body;
@@ -175,7 +170,6 @@ app.get('/api/me', requireAuth, (req, res) => {
   });
 });
 
-// ========== COURSES & ENROLLMENTS ==========
 
 app.get('/api/courses', async (_req, res) => {
   try {
@@ -282,7 +276,6 @@ app.get('/api/my-enrollments', requireAuth, async (req, res) => {
   }
 });
 
-// ========== FEEDBACK ==========
 
 app.post('/api/feedback', async (req, res) => {
   const currentUser = req.currentUser;
@@ -310,7 +303,6 @@ app.post('/api/feedback', async (req, res) => {
   }
 });
 
-// ========== ADMIN: USERS ==========
 
 app.get('/api/admin/users', requireAdmin, async (req, res) => {
   const { role } = req.query;
@@ -394,7 +386,6 @@ app.post('/api/admin/users', requireAdmin, async (req, res) => {
   }
 });
 
-// Обновление профиля текущего пользователя
 app.put('/api/profile', requireAuth, async (req, res) => {
   const currentUser = req.currentUser;
   const { username, fullName, password } = req.body;
@@ -404,7 +395,6 @@ app.put('/api/profile', requireAuth, async (req, res) => {
   }
   
   try {
-    // Проверяем, не занято ли имя пользователя другим пользователем
     const existing = await db.query(
       `SELECT 1 FROM users WHERE username = $1 AND id <> $2`,
       [username, currentUser.id]
@@ -414,7 +404,6 @@ app.put('/api/profile', requireAuth, async (req, res) => {
     }
     
     if (password) {
-      // Обновляем с паролем
       await db.query(
         `UPDATE users
          SET username = $1, full_name = $2, password = $3
@@ -422,7 +411,6 @@ app.put('/api/profile', requireAuth, async (req, res) => {
         [username, fullName, password, currentUser.id]
       );
     } else {
-      // Обновляем без пароля
       await db.query(
         `UPDATE users
          SET username = $1, full_name = $2
@@ -431,7 +419,6 @@ app.put('/api/profile', requireAuth, async (req, res) => {
       );
     }
     
-    // Возвращаем обновленные данные пользователя
     const result = await db.query(
       `SELECT id, username, email, full_name AS "fullName",
               role, created_at AS "createdAt"
@@ -522,7 +509,6 @@ app.delete('/api/admin/users/:id', requireAdmin, async (req, res) => {
   }
 });
 
-// ========== ADMIN: COURSES ==========
 
 app.post('/api/admin/courses', requireAdmin, async (req, res) => {
   const {
@@ -621,7 +607,6 @@ app.delete('/api/admin/courses/:id', requireAdmin, async (req, res) => {
   }
 });
 
-// ========== ADMIN: FEEDBACK ==========
 
 app.get('/api/admin/feedback', requireAdmin, async (_req, res) => {
   try {
@@ -666,7 +651,6 @@ app.put('/api/admin/feedback/:id', requireAdmin, async (req, res) => {
   }
 });
 
-// ========== ADMIN: SCHEDULE ==========
 
 app.get('/api/admin/schedule', requireAdmin, async (_req, res) => {
   try {
@@ -855,7 +839,6 @@ app.delete('/api/admin/schedule/:id', requireAdmin, async (req, res) => {
   }
 });
 
-// ========== ADMIN: EDUCATIONAL PROCESSES ==========
 
 app.get('/api/admin/processes', requireAdmin, async (_req, res) => {
   try {
@@ -911,9 +894,6 @@ app.get('/api/admin/processes/:id', requireAdmin, async (req, res) => {
   }
 });
 
-// ========== SCHEDULE & PROGRESS FOR STUDENTS / TEACHERS ==========
-
-// Расписание для текущего студента по его курсам с состоянием ответов
 app.get('/api/my-schedule', requireAuth, async (req, res) => {
   const currentUser = req.currentUser;
   try {
@@ -952,7 +932,6 @@ app.get('/api/my-schedule', requireAuth, async (req, res) => {
   }
 });
 
-// Расписание для преподавателя по его занятиям
 app.get('/api/teacher/schedule', requireAuth, async (req, res) => {
   const currentUser = req.currentUser;
   if (currentUser.role !== 'teacher' && currentUser.role !== 'admin') {
@@ -961,7 +940,6 @@ app.get('/api/teacher/schedule', requireAuth, async (req, res) => {
       .json({ error: 'Доступ запрещен. Требуются права преподавателя' });
   }
   try {
-    // Админ видит все занятия, учитель - только свои
     const query =
       currentUser.role === 'admin'
         ? `SELECT s.id,
@@ -1008,7 +986,6 @@ app.get('/api/teacher/schedule', requireAuth, async (req, res) => {
   }
 });
 
-// Преподаватель добавляет занятие в расписание
 app.post('/api/teacher/schedule', requireAuth, async (req, res) => {
   const currentUser = req.currentUser;
   if (currentUser.role !== 'teacher' && currentUser.role !== 'admin') {
@@ -1029,7 +1006,6 @@ app.post('/api/teacher/schedule', requireAuth, async (req, res) => {
     return res.status(400).json({ error: 'Не заполнены обязательные поля' });
   }
   try {
-    // Дополнительная проверка: преподаватель должен быть назначен на курс (по имени)
     const courseRes = await db.query(
       'SELECT id, instructor FROM courses WHERE id = $1',
       [Number(courseId)]
@@ -1082,7 +1058,6 @@ app.post('/api/teacher/schedule', requireAuth, async (req, res) => {
   }
 });
 
-// Студент отправляет ответ по занятию
 app.post('/api/lessons/:id/answer', requireAuth, async (req, res) => {
   const currentUser = req.currentUser;
   if (currentUser.role !== 'student') {
@@ -1138,7 +1113,6 @@ app.post('/api/lessons/:id/answer', requireAuth, async (req, res) => {
   }
 });
 
-// Преподаватель просматривает ответы по занятию
 app.get(
   '/api/teacher/lessons/:id/submissions',
   requireAuth,
@@ -1161,7 +1135,6 @@ app.get(
       if (scheduleRes.rowCount === 0) {
         return res.status(404).json({ error: 'Занятие не найдено' });
       }
-      // Админ может просматривать ответы по любым занятиям, учитель - только по своим
       if (
         currentUser.role === 'teacher' &&
         scheduleRes.rows[0].instructor_id !== currentUser.id
@@ -1196,7 +1169,6 @@ app.get(
   }
 );
 
-// Преподаватель проверяет ответ и обновляет прогресс
 app.post(
   '/api/teacher/lessons/:lessonId/submissions/:submissionId/review',
   requireAuth,
@@ -1224,7 +1196,6 @@ app.post(
       const { course_id: courseId, instructor_id: instructorId } =
         scheduleRes.rows[0];
 
-      // Админ может проверять ответы по любым занятиям, учитель - только по своим
       if (
         currentUser.role === 'teacher' &&
         instructorId !== currentUser.id
@@ -1248,7 +1219,6 @@ app.post(
       }
       const enrollmentId = updRes.rows[0].enrollmentId;
 
-      // Пересчитываем прогресс по курсу для соответствующего студента
       const enrRes = await db.query(
         'SELECT user_id FROM enrollments WHERE id = $1',
         [enrollmentId]
@@ -1391,14 +1361,11 @@ app.delete('/api/admin/processes/:id', requireAdmin, async (req, res) => {
   }
 });
 
-// Fallback 404 for unknown API routes
 app.use('/api', (_req, res) => {
   res.status(404).json({ error: 'API endpoint не найден' });
 });
 
-// SPA fallback: serve index.html for all non-API routes
 app.get('*', (req, res) => {
-  // Don't serve index.html for API routes
   if (req.path.startsWith('/api')) {
     return res.status(404).json({ error: 'API endpoint не найден' });
   }

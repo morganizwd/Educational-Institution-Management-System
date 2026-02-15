@@ -177,7 +177,6 @@ export const DashboardPage: React.FC = () => {
           });
           if (res.ok) {
             const data: Course[] = await res.json();
-            // Фильтруем курсы, где текущий пользователь является преподавателем (для учителей)
             if (user.role === 'teacher') {
               const filtered = data.filter(
                 (c) => c.instructor === user.fullName || user.role === 'admin'
@@ -230,20 +229,16 @@ export const DashboardPage: React.FC = () => {
       
       const result = await res.json();
       if (!res.ok) {
-        // eslint-disable-next-line no-alert
-        alert(result.error || 'Ошибка обновления профиля');
+      alert(result.error || 'Ошибка обновления профиля');
         return;
       }
       
-      // eslint-disable-next-line no-alert
       alert('Профиль успешно обновлен');
       setShowEditProfile(false);
       setProfileForm({ ...profileForm, password: '' });
-      // Обновляем данные пользователя
       await refresh();
     } catch (e) {
       console.error(e);
-      // eslint-disable-next-line no-alert
       alert('Ошибка соединения с сервером');
     }
   };
@@ -400,7 +395,6 @@ export const DashboardPage: React.FC = () => {
   const sendAnswer = async (lessonId: number, enrollmentId: number) => {
     const text = answerDrafts[lessonId];
     if (!text) {
-      // eslint-disable-next-line no-alert
       alert('Ответ не может быть пустым');
       return;
     }
@@ -412,13 +406,10 @@ export const DashboardPage: React.FC = () => {
       });
       const data = await res.json();
       if (!res.ok) {
-        // eslint-disable-next-line no-alert
         alert(data.error || 'Ошибка отправки ответа');
         return;
       }
-      // eslint-disable-next-line no-alert
       alert('Ответ отправлен на проверку');
-      // Обновляем расписание
       const resSchedule = await fetch('/api/my-schedule');
       if (resSchedule.ok) {
         const scheduleData: MyScheduleItem[] = await resSchedule.json();
@@ -426,7 +417,6 @@ export const DashboardPage: React.FC = () => {
       }
     } catch (e) {
       console.error(e);
-      // eslint-disable-next-line no-alert
       alert('Ошибка соединения с сервером');
     }
   };
@@ -479,17 +469,13 @@ export const DashboardPage: React.FC = () => {
       );
       const data = await res.json();
       if (!res.ok) {
-        // eslint-disable-next-line no-alert
         alert(data.error || 'Ошибка проверки ответа');
         return;
       }
-      // eslint-disable-next-line no-alert
       alert(approved ? 'Ответ одобрен' : 'Ответ отклонен');
-      // Обновляем список ответов
       void loadSubmissions(lessonId);
     } catch (e) {
       console.error(e);
-      // eslint-disable-next-line no-alert
       alert('Ошибка соединения с сервером');
     }
   };
@@ -504,7 +490,6 @@ export const DashboardPage: React.FC = () => {
       !newLesson.room ||
       !newLesson.type
     ) {
-      // eslint-disable-next-line no-alert
       alert('Заполните все обязательные поля');
       return;
     }
@@ -525,11 +510,9 @@ export const DashboardPage: React.FC = () => {
       });
       const data = await res.json();
       if (!res.ok) {
-        // eslint-disable-next-line no-alert
         alert(data.error || 'Ошибка создания занятия');
         return;
       }
-      // eslint-disable-next-line no-alert
       alert('Занятие успешно добавлено');
       setShowAddLessonForm(false);
       setNewLesson({
@@ -541,7 +524,6 @@ export const DashboardPage: React.FC = () => {
         room: '',
         type: 'lecture',
       });
-      // Обновляем расписание
       const resSchedule = await fetch('/api/teacher/schedule', {
         credentials: 'include',
       });
@@ -551,7 +533,6 @@ export const DashboardPage: React.FC = () => {
       }
     } catch (e) {
       console.error(e);
-      // eslint-disable-next-line no-alert
       alert('Ошибка соединения с сервером');
     }
   };

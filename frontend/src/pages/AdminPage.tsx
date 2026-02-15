@@ -69,14 +69,12 @@ export const AdminPage: React.FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<string>('users');
   
-  // Users state
   const [users, setUsers] = useState<UserRow[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [userRoleFilter, setUserRoleFilter] = useState<string>('');
   const [showUserForm, setShowUserForm] = useState(false);
   const [editingUser, setEditingUser] = useState<UserRow | null>(null);
   
-  // Schedule state
   const [schedule, setSchedule] = useState<Schedule[]>([]);
   const [loadingSchedule, setLoadingSchedule] = useState(false);
   const [showScheduleForm, setShowScheduleForm] = useState(false);
@@ -84,19 +82,16 @@ export const AdminPage: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [teachers, setTeachers] = useState<UserRow[]>([]);
   
-  // Processes state
   const [processes, setProcesses] = useState<Process[]>([]);
   const [loadingProcesses, setLoadingProcesses] = useState(false);
   const [showProcessForm, setShowProcessForm] = useState(false);
   const [editingProcess, setEditingProcess] = useState<Process | null>(null);
   
-  // Courses state
   const [allCourses, setAllCourses] = useState<Course[]>([]);
   const [loadingCourses, setLoadingCourses] = useState(false);
   const [showCourseForm, setShowCourseForm] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   
-  // Feedback state
   const [feedback, setFeedback] = useState<Feedback[]>([]);
   const [loadingFeedback, setLoadingFeedback] = useState(false);
 
@@ -110,7 +105,6 @@ export const AdminPage: React.FC = () => {
     }
   }, [loading, user, navigate]);
 
-  // Load users
   const loadUsers = async () => {
     try {
       setLoadingUsers(true);
@@ -128,7 +122,6 @@ export const AdminPage: React.FC = () => {
     }
   };
 
-  // Handle user form submit
   const handleUserSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -166,7 +159,6 @@ export const AdminPage: React.FC = () => {
     }
   };
 
-  // Delete user
   const handleDeleteUser = async (id: number) => {
     if (!confirm('Удалить этого пользователя? Это действие нельзя отменить.')) return;
     try {
@@ -179,7 +171,6 @@ export const AdminPage: React.FC = () => {
     }
   };
 
-  // Load schedule
   const loadSchedule = async () => {
     try {
       setLoadingSchedule(true);
@@ -194,7 +185,6 @@ export const AdminPage: React.FC = () => {
     }
   };
 
-  // Load processes
   const loadProcesses = async () => {
     try {
       setLoadingProcesses(true);
@@ -209,7 +199,6 @@ export const AdminPage: React.FC = () => {
     }
   };
 
-  // Load courses
   const loadCourses = async () => {
     try {
       setLoadingCourses(true);
@@ -224,7 +213,6 @@ export const AdminPage: React.FC = () => {
     }
   };
 
-  // Load feedback
   const loadFeedback = async () => {
     try {
       setLoadingFeedback(true);
@@ -239,16 +227,13 @@ export const AdminPage: React.FC = () => {
     }
   };
 
-  // Load teachers for schedule and course forms
   const loadTeachers = async () => {
     try {
-      // Загружаем всех пользователей с ролями teacher и admin
       const res = await fetch('/api/admin/users', {
         credentials: 'include',
       });
       if (!res.ok) throw new Error();
       const data: UserRow[] = await res.json();
-      // Фильтруем только преподавателей и админов
       const teachersAndAdmins = data.filter(
         (u) => u.role === 'teacher' || u.role === 'admin'
       );
@@ -258,7 +243,6 @@ export const AdminPage: React.FC = () => {
     }
   };
 
-  // Load data when tab changes
   useEffect(() => {
     if (user?.role === 'admin') {
       if (activeTab === 'users') {
@@ -279,7 +263,6 @@ export const AdminPage: React.FC = () => {
     }
   }, [activeTab, user]);
 
-  // Handle schedule form submit
   const handleScheduleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -320,7 +303,6 @@ export const AdminPage: React.FC = () => {
     }
   };
 
-  // Handle process form submit
   const handleProcessSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -358,7 +340,6 @@ export const AdminPage: React.FC = () => {
     }
   };
 
-  // Delete schedule
   const handleDeleteSchedule = async (id: number) => {
     if (!confirm('Удалить это занятие?')) return;
     try {
@@ -371,7 +352,6 @@ export const AdminPage: React.FC = () => {
     }
   };
 
-  // Delete process
   const handleDeleteProcess = async (id: number) => {
     if (!confirm('Удалить этот модуль?')) return;
     try {
@@ -384,7 +364,6 @@ export const AdminPage: React.FC = () => {
     }
   };
 
-  // Handle course form submit
   const handleCourseSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -425,7 +404,6 @@ export const AdminPage: React.FC = () => {
     }
   };
 
-  // Delete course
   const handleDeleteCourse = async (id: number) => {
     if (!confirm('Удалить этот курс?')) return;
     try {
@@ -438,7 +416,6 @@ export const AdminPage: React.FC = () => {
     }
   };
 
-  // Update feedback status
   const handleUpdateFeedbackStatus = async (id: number, status: string) => {
     try {
       const res = await fetch(`/api/admin/feedback/${id}`, {
@@ -499,7 +476,6 @@ export const AdminPage: React.FC = () => {
           </button>
         </div>
 
-        {/* Users Tab */}
         {activeTab === 'users' && (
           <div className="tab-content active">
             <div className="admin-header">
@@ -679,7 +655,6 @@ export const AdminPage: React.FC = () => {
           </div>
         )}
 
-        {/* Schedule Tab */}
         {activeTab === 'schedule' && (
           <div className="tab-content active">
             <div className="admin-header">
@@ -879,7 +854,6 @@ export const AdminPage: React.FC = () => {
           </div>
         )}
 
-        {/* Processes Tab */}
         {activeTab === 'processes' && (
           <div className="tab-content active">
             <div className="admin-header">
@@ -1044,7 +1018,6 @@ export const AdminPage: React.FC = () => {
           </div>
         )}
 
-        {/* Courses Tab */}
         {activeTab === 'courses' && (
           <div className="tab-content active">
             <div className="admin-header">
@@ -1252,7 +1225,6 @@ export const AdminPage: React.FC = () => {
           </div>
         )}
 
-        {/* Feedback Tab */}
         {activeTab === 'feedback' && (
           <div className="tab-content active">
             <div className="admin-header">

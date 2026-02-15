@@ -18,7 +18,6 @@ export const CoursesPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  // Search and filters
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [priceFilter, setPriceFilter] = useState<string>('all'); // all, free, low, medium, high
@@ -66,14 +65,11 @@ export const CoursesPage: React.FC = () => {
     }
   };
 
-  // Get unique categories
   const categories = Array.from(new Set(courses.map(c => c.category))).sort();
 
-  // Filter and sort courses
   const filteredAndSortedCourses = React.useMemo(() => {
     let filtered = [...courses];
 
-    // Search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
@@ -85,12 +81,10 @@ export const CoursesPage: React.FC = () => {
       );
     }
 
-    // Category filter
     if (selectedCategory) {
       filtered = filtered.filter(course => course.category === selectedCategory);
     }
 
-    // Price filter
     if (priceFilter !== 'all') {
       filtered = filtered.filter(course => {
         const price = course.price;
@@ -109,7 +103,6 @@ export const CoursesPage: React.FC = () => {
       });
     }
 
-    // Sort
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'title':
@@ -119,7 +112,6 @@ export const CoursesPage: React.FC = () => {
         case 'price-desc':
           return b.price - a.price;
         case 'duration':
-          // Extract numbers from duration string for comparison
           const aDuration = parseInt(a.duration.match(/\d+/)?.[0] || '0');
           const bDuration = parseInt(b.duration.match(/\d+/)?.[0] || '0');
           return aDuration - bDuration;
@@ -136,7 +128,6 @@ export const CoursesPage: React.FC = () => {
       <div className="container">
         <h2>Доступные курсы</h2>
         
-        {/* Search and Filters */}
         {!loading && !error && courses.length > 0 && (
           <div className="courses-filters" style={{ 
             marginBottom: '2rem', 
@@ -145,7 +136,6 @@ export const CoursesPage: React.FC = () => {
             borderRadius: '12px',
             boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
           }}>
-            {/* Search */}
             <div style={{ marginBottom: '1rem' }}>
               <input
                 type="text"
@@ -165,13 +155,11 @@ export const CoursesPage: React.FC = () => {
               />
             </div>
 
-            {/* Filters Row */}
             <div style={{ 
               display: 'grid', 
               gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
               gap: '1rem' 
             }}>
-              {/* Category Filter */}
               <div>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: '#2c3e50' }}>
                   Категория:
@@ -196,7 +184,6 @@ export const CoursesPage: React.FC = () => {
                 </select>
               </div>
 
-              {/* Price Filter */}
               <div>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: '#2c3e50' }}>
                   Цена:
@@ -222,7 +209,6 @@ export const CoursesPage: React.FC = () => {
                 </select>
               </div>
 
-              {/* Sort */}
               <div>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: '#2c3e50' }}>
                   Сортировка:
@@ -248,7 +234,6 @@ export const CoursesPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Results count */}
             <div style={{ 
               marginTop: '1rem', 
               padding: '0.75rem', 
@@ -294,7 +279,6 @@ export const CoursesPage: React.FC = () => {
                       alt={course.title}
                       className="course-image"
                       onError={(e) => {
-                        // Скрываем изображение при ошибке загрузки
                         (e.target as HTMLImageElement).style.display = 'none';
                       }}
                     />
